@@ -1,13 +1,13 @@
-const express = require("express"); // Import express
-const app = express(); // Create an instance of express
-const port = 8000; // puerto de escucha
+const express = require('express');
+const { port } = require('./config/env'); // o './env' según ubicación
 
-// Inicializacion del servidor y primera ruta
-app.get("/", (req, res) => {
-  res.send("Hola mi server en Express");
+const app = express();
+
+app.get('/', (req, res) => {
+  // req no se usa, por eso aparece atenuado. Puedes poner _req si tu linter lo exige.
+  res.send('Hola mi server en Express');
 });
 
-// Inicio del servidor
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
 });
