@@ -87,7 +87,7 @@ router.post('/', (req, res) => {
   res.status(201).json(newUser);
 });
 
-// PUT /api/v1/users/:id - Actualización completa de usuario (Paso 8 de la guía)
+// PUT /api/v1/users/:id - Actualización completa de usuario
 router.put('/:id', (req, res) => {
   const { id } = req.params;
   const { fullName, email } = req.body;
@@ -104,7 +104,6 @@ router.put('/:id', (req, res) => {
     });
   }
 
-  // PUT requiere la estructura completa del recurso
   if (!fullName || !email) {
     return res.status(400).json({
       status: 400,
@@ -115,7 +114,6 @@ router.put('/:id', (req, res) => {
     });
   }
 
-  // Reemplazo completo manteniendo id y fecha de creación original
   users[userIndex] = {
     ...users[userIndex],
     fullName,
@@ -126,7 +124,7 @@ router.put('/:id', (req, res) => {
   res.status(200).json(users[userIndex]);
 });
 
-// PATCH /api/v1/users/:id - Actualización parcial de usuario (Paso 8 de la guía)
+// PATCH /api/v1/users/:id - Actualización parcial de usuario
 router.patch('/:id', (req, res) => {
   const { id } = req.params;
   const { fullName, email } = req.body;
@@ -143,7 +141,6 @@ router.patch('/:id', (req, res) => {
     });
   }
 
-  // PATCH actualiza únicamente los campos provistos en req.body
   if (fullName !== undefined) users[userIndex].fullName = fullName;
   if (email !== undefined) users[userIndex].email = email;
   users[userIndex].updatedAt = new Date().toISOString();
@@ -151,9 +148,27 @@ router.patch('/:id', (req, res) => {
   res.status(200).json(users[userIndex]);
 });
 
-// DELETE: Eliminar usuario
+// DELETE /api/v1/users/:id - Eliminación de recursos (Paso 9 de la guía)
 router.delete('/:id', (req, res) => {
-  res.send(`Ruta DELETE: Eliminar usuario ${req.params.id}`);
+  const { id } = req.params;
+  const userIndex = users.findIndex(u => u.id === id);
+
+  // Si el recurso no existe, retornar 404 Not Found (según el estándar del documento)
+  if (userIndex === -1) {
+    return res.status(404).json({
+      status: 404,
+      error: "Not Found",
+      message: `No se encontró ningún usuario con el id: ${id} para eliminar.`,
+      path: req.originalUrl,
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  // Eliminar el usuario del arreglo usando splice
+  users.splice(userIndex, 1);
+
+  // Retornar estado 204 No Content (operación exitosa sin cuerpo de respuesta)
+  res.status(204).send();
 });
 
 module.exports = router;
