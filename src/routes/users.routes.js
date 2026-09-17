@@ -2,6 +2,10 @@ const express = require('express');
 const crypto = require('crypto');
 const router = express.Router();
 
+// ==========================================
+// VALIDACIÓN DE PARÁMETROS, QUERY STRINGS Y ESTADOS HTTP
+// ==========================================
+
 // Base de datos simulada en memoria (según el formato JSON de la pág. 9 del documento)
 const users = [
   {
