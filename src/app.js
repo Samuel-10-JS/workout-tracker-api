@@ -1,12 +1,19 @@
 const express = require('express');
 const { port } = require('./config/env'); // o './env' según ubicación
+const usersRouter = require('./routes/users.routes');
 
 const app = express();
 
+// Configurar lectura de JSON y urlencoded 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.get('/', (req, res) => {
-  // req no se usa, por eso aparece atenuado. Puedes poner _req si tu linter lo exige.
   res.send('Hola mi server en Express');
 });
+
+// Rutas de la API
+app.use('/api/v1/users', usersRouter);
 
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
