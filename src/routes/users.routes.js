@@ -51,11 +51,10 @@ router.get('/:id', (req, res) => {
   res.status(200).json(user);
 });
 
-// POST /api/v1/users - Crear nuevo usuario (Paso 7 de la guía: Método POST y código 201 Created)
+// POST /api/v1/users - Crear nuevo usuario
 router.post('/', (req, res) => {
   const { fullName, email, password } = req.body;
 
-  // Validar datos de entrada requeridos
   if (!fullName || !email || !password) {
     return res.status(400).json({
       status: 400,
@@ -66,7 +65,6 @@ router.post('/', (req, res) => {
     });
   }
 
-  // Validar si el email ya existe
   const emailExists = users.some(u => u.email.toLowerCase() === email.toLowerCase());
   if (emailExists) {
     return res.status(400).json({
@@ -78,7 +76,6 @@ router.post('/', (req, res) => {
     });
   }
 
-  // Crear objeto del nuevo usuario con UUID dinámico
   const newUser = {
     id: crypto.randomUUID(),
     fullName,
@@ -87,19 +84,71 @@ router.post('/', (req, res) => {
   };
 
   users.push(newUser);
-
-  // Retornar respuesta con estado 201 Created
   res.status(201).json(newUser);
 });
 
-// PUT: Actualización completa de usuario
+// PUT /api/v1/users/:id - Actualización completa de usuario (Paso 8 de la guía)
 router.put('/:id', (req, res) => {
-  res.send(`Ruta PUT: Actualizar usuario ${req.params.id}`);
+  const { id } = req.params;
+  const { fullName, email } = req.body;
+
+  const userIndex = users.findIndex(u => u.id === id);
+
+  if (userIndex === -1) {
+    return res.status(404).json({
+      status: 404,
+      error: "Not Found",
+      message: `No se encontró ningún usuario con el id: ${id} para actualizar.`,
+      path: req.originalUrl,
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  // PUT requiere la estructura completa del recurso
+  if (!fullName || !email) {
+    return res.status(400).json({
+      status: 400,
+      error: "Bad Request",
+      message: "Para una actualización completa (PUT), se requieren los campos fullName y email.",
+      path: req.originalUrl,
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  // Reemplazo completo manteniendo id y fecha de creación original
+  users[userIndex] = {
+    ...users[userIndex],
+    fullName,
+    email,
+    updatedAt: new Date().toISOString()
+  };
+
+  res.status(200).json(users[userIndex]);
 });
 
-// PATCH: Actualización parcial de usuario
+// PATCH /api/v1/users/:id - Actualización parcial de usuario (Paso 8 de la guía)
 router.patch('/:id', (req, res) => {
-  res.send(`Ruta PATCH: Actualizar parcialmente usuario ${req.params.id}`);
+  const { id } = req.params;
+  const { fullName, email } = req.body;
+
+  const userIndex = users.findIndex(u => u.id === id);
+
+  if (userIndex === -1) {
+    return res.status(404).json({
+      status: 404,
+      error: "Not Found",
+      message: `No se encontró ningún usuario con el id: ${id} para actualizar.`,
+      path: req.originalUrl,
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  // PATCH actualiza únicamente los campos provistos en req.body
+  if (fullName !== undefined) users[userIndex].fullName = fullName;
+  if (email !== undefined) users[userIndex].email = email;
+  users[userIndex].updatedAt = new Date().toISOString();
+
+  res.status(200).json(users[userIndex]);
 });
 
 // DELETE: Eliminar usuario
