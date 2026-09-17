@@ -1,4 +1,5 @@
 const express = require('express');
+const crypto = require('crypto');
 const router = express.Router();
 
 // Base de datos simulada en memoria (según el formato JSON de la pág. 9 del documento)
@@ -50,9 +51,45 @@ router.get('/:id', (req, res) => {
   res.status(200).json(user);
 });
 
-// POST: Crear nuevo usuario
+// POST /api/v1/users - Crear nuevo usuario (Paso 7 de la guía: Método POST y código 201 Created)
 router.post('/', (req, res) => {
-  res.send('Ruta POST: Crear usuario');
+  const { fullName, email, password } = req.body;
+
+  // Validar datos de entrada requeridos
+  if (!fullName || !email || !password) {
+    return res.status(400).json({
+      status: 400,
+      error: "Bad Request",
+      message: "Los campos fullName, email y password son obligatorios.",
+      path: req.originalUrl,
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  // Validar si el email ya existe
+  const emailExists = users.some(u => u.email.toLowerCase() === email.toLowerCase());
+  if (emailExists) {
+    return res.status(400).json({
+      status: 400,
+      error: "Bad Request",
+      message: `El correo electrónico '${email}' ya se encuentra registrado.`,
+      path: req.originalUrl,
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  // Crear objeto del nuevo usuario con UUID dinámico
+  const newUser = {
+    id: crypto.randomUUID(),
+    fullName,
+    email,
+    createdAt: new Date().toISOString()
+  };
+
+  users.push(newUser);
+
+  // Retornar respuesta con estado 201 Created
+  res.status(201).json(newUser);
 });
 
 // PUT: Actualización completa de usuario
