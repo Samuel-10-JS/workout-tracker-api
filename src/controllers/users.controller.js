@@ -1,10 +1,4 @@
-const express = require('express');
 const crypto = require('crypto');
-const router = express.Router();
-
-// ==========================================
-// VALIDACIÓN DE PARÁMETROS, QUERY STRINGS Y ESTADOS HTTP
-// ==========================================
 
 // Base de datos simulada en memoria (según el formato JSON de la pág. 9 del documento)
 const users = [
@@ -22,8 +16,8 @@ const users = [
   }
 ];
 
-// GET /api/v1/users - Listar todos los usuarios (con soporte a query string de búsqueda)
-router.get('/', (req, res) => {
+// GET: Listar todos los usuarios
+const getAllUsers = (req, res) => {
   const { search } = req.query;
 
   if (search) {
@@ -35,10 +29,10 @@ router.get('/', (req, res) => {
   }
 
   res.status(200).json(users);
-});
+};
 
-// GET /api/v1/users/:id - Obtener un usuario por su ID
-router.get('/:id', (req, res) => {
+// GET: Obtener un usuario por ID
+const getUserById = (req, res) => {
   const { id } = req.params;
   const user = users.find(u => u.id === id);
 
@@ -53,10 +47,10 @@ router.get('/:id', (req, res) => {
   }
 
   res.status(200).json(user);
-});
+};
 
-// POST /api/v1/users - Crear nuevo usuario
-router.post('/', (req, res) => {
+// POST: Crear nuevo usuario
+const createUser = (req, res) => {
   const { fullName, email, password } = req.body;
 
   if (!fullName || !email || !password) {
@@ -89,10 +83,10 @@ router.post('/', (req, res) => {
 
   users.push(newUser);
   res.status(201).json(newUser);
-});
+};
 
-// PUT /api/v1/users/:id - Actualización completa de usuario
-router.put('/:id', (req, res) => {
+// PUT: Actualización completa de usuario
+const updateUser = (req, res) => {
   const { id } = req.params;
   const { fullName, email } = req.body;
 
@@ -126,10 +120,10 @@ router.put('/:id', (req, res) => {
   };
 
   res.status(200).json(users[userIndex]);
-});
+};
 
-// PATCH /api/v1/users/:id - Actualización parcial de usuario
-router.patch('/:id', (req, res) => {
+// PATCH: Actualización parcial de usuario
+const patchUser = (req, res) => {
   const { id } = req.params;
   const { fullName, email } = req.body;
 
@@ -150,14 +144,13 @@ router.patch('/:id', (req, res) => {
   users[userIndex].updatedAt = new Date().toISOString();
 
   res.status(200).json(users[userIndex]);
-});
+};
 
-// DELETE /api/v1/users/:id - Eliminación de recursos (Paso 9 de la guía)
-router.delete('/:id', (req, res) => {
+// DELETE: Eliminar usuario
+const deleteUser = (req, res) => {
   const { id } = req.params;
   const userIndex = users.findIndex(u => u.id === id);
 
-  // Si el recurso no existe, retornar 404 Not Found (según el estándar del documento)
   if (userIndex === -1) {
     return res.status(404).json({
       status: 404,
@@ -168,11 +161,15 @@ router.delete('/:id', (req, res) => {
     });
   }
 
-  // Eliminar el usuario del arreglo usando splice
   users.splice(userIndex, 1);
-
-  // Retornar estado 204 No Content (operación exitosa sin cuerpo de respuesta)
   res.status(204).send();
-});
+};
 
-module.exports = router;
+module.exports = {
+  getAllUsers,
+  getUserById,
+  createUser,
+  updateUser,
+  patchUser,
+  deleteUser
+};
