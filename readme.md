@@ -38,6 +38,18 @@ API RESTful desarrollada con Node.js y Express para gestionar usuarios, rutinas,
 | **POST** | `/api/v1/workouts/:id/exercises` | Agregar un ejercicio puntual a un entrenamiento existente | Privada (Propietario) / 201 Created o 404 Not Found |
 | **DELETE** | `/api/v1/workouts/:id/exercises/:exerciseItemId` | Eliminar un ejercicio puntual de la rutina | Privada (Propietario) / 204 No Content o 404 Not Found |
 
+## 📊 Endpoints del Módulo de Informes y Progreso (`/api/v1/reports`)
+
+| Método | Endpoint | Descripción | Restricción / Estado |
+| :--- | :--- | :--- | :--- |
+| **GET** | `/api/v1/reports/progress` | Generar informe consolidado analítico (Filtros: `?from=YYYY-MM-DD&to=YYYY-MM-DD`) | Privada (Propietario) / 200 OK |
+| **GET** | `/api/v1/reports` | Listar reportes generados guardados | Privada (Propietario) / 200 OK |
+| **GET** | `/api/v1/reports/:id` | Consultar un reporte consolidado específico por ID | Privada (Propietario) / 200 OK o 404 Not Found |
+| **POST** | `/api/v1/reports` | Guardar / Registrar un nuevo reporte consolidado | Privada (Propietario) / 201 Created o 400 Bad Request |
+| **PUT** | `/api/v1/reports/:id` | Actualizar completamente un reporte existente | Privada (Propietario) / 200 OK o 404 Not Found |
+| **PATCH** | `/api/v1/reports/:id` | Actualización parcial de notas o fechas del reporte | Privada (Propietario) / 200 OK o 404 Not Found |
+| **DELETE** | `/api/v1/reports/:id` | Eliminar un reporte | Privada (Propietario) / 204 No Content o 404 Not Found |
+
 ## 🛠️ Tecnologías Utilizadas
 - **Node.js**
 - **Express 5**
