@@ -14,15 +14,11 @@ router.get('/:id', reportsController.getReportById);
 // POST: Crear reporte
 router.post('/', reportsController.createReport);
 
-// PUT: Actualizar reporte (Placeholder)
-router.put('/:id', (req, res) => {
-  res.send(`Ruta PUT: Actualizar reporte ${req.params.id}`);
-});
+// PUT: Actualizar reporte
+router.put('/:id', reportsController.updateReport);
 
-// PATCH: Actualización parcial (Placeholder)
-router.patch('/:id', (req, res) => {
-  res.send(`Ruta PATCH: Actualizar parcialmente reporte ${req.params.id}`);
-});
+// PATCH: Actualización parcial
+router.patch('/:id', reportsController.patchReport);
 
 // DELETE: Eliminar reporte (Placeholder)
 router.delete('/:id', (req, res) => {
