@@ -14,15 +14,11 @@ router.post('/seed', exercisesController.seedExercises);
 // POST: Crear nuevo ejercicio
 router.post('/', exercisesController.createExercise);
 
-// PUT: Actualizar ejercicio (Placeholder)
-router.put('/:id', (req, res) => {
-  res.send(`Ruta PUT: Actualizar ejercicio ${req.params.id}`);
-});
+// PUT: Actualizar ejercicio
+router.put('/:id', exercisesController.updateExercise);
 
-// PATCH: Actualización parcial (Placeholder)
-router.patch('/:id', (req, res) => {
-  res.send(`Ruta PATCH: Actualizar parcialmente ejercicio ${req.params.id}`);
-});
+// PATCH: Actualización parcial
+router.patch('/:id', exercisesController.patchExercise);
 
 // DELETE: Eliminar ejercicio (Placeholder)
 router.delete('/:id', (req, res) => {
