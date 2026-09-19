@@ -80,8 +80,33 @@ const workouts = [
   }
 ];
 
+const reports = [
+  {
+    id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    userId: "7b55f190-3b6d-4952-9b21-4f80879f9021",
+    reportPeriod: {
+      from: "2026-09-01",
+      to: "2026-09-30"
+    },
+    summary: {
+      totalWorkoutsScheduled: 12,
+      completedWorkouts: 11,
+      pendingWorkouts: 1,
+      completionRate: "91.6%",
+      totalTonnageLiftedKg: 18450.0
+    },
+    progressByMuscleGroup: [
+      { muscleGroup: "pecho", sessionsCount: 8, accumulatedKg: 7200.0 },
+      { muscleGroup: "espalda", sessionsCount: 7, accumulatedKg: 6800.0 },
+      { muscleGroup: "piernas", sessionsCount: 6, accumulatedKg: 4450.0 }
+    ],
+    createdAt: "2026-09-30T23:59:59.000Z"
+  }
+];
+
 module.exports = {
   users,
   exercises,
-  workouts
+  workouts,
+  reports
 };
