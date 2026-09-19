@@ -4,6 +4,7 @@ const exercisesController = require('../../controllers/exercises.controller');
 
 // ==========================================
 // MÓDULO DE EJERCICIOS (CATÁLOGO MAESTRO)
+// VALIDACIÓN DE PARÁMETROS, QUERY STRINGS Y ESTADOS HTTP
 // ==========================================
 
 // GET: Listar todos los ejercicios
