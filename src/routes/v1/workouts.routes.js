@@ -4,6 +4,7 @@ const workoutsController = require('../../controllers/workouts.controller');
 
 // ==========================================
 // MÓDULO DE ENTRENAMIENTOS (PLANES DE USUARIO)
+// VALIDACIÓN DE PARÁMETROS, QUERY STRINGS Y ESTADOS HTTP
 // ==========================================
 
 // GET: Listar todos los entrenamientos
