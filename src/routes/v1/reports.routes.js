@@ -4,6 +4,7 @@ const reportsController = require('../../controllers/reports.controller');
 
 // ==========================================
 // MÓDULO DE INFORMES Y ANALÍTICA DE PROGRESO
+// VALIDACIÓN DE PARÁMETROS, QUERY STRINGS Y ESTADOS HTTP
 // ==========================================
 
 // GET: Generar reporte analítico de progreso (?from=YYYY-MM-DD&to=YYYY-MM-DD)
