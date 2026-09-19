@@ -14,15 +14,11 @@ router.post('/', workoutsController.createWorkout);
 // POST: Agregar un ejercicio a una rutina existente
 router.post('/:id/exercises', workoutsController.addExerciseToWorkout);
 
-// PUT: Actualización completa (Placeholder)
-router.put('/:id', (req, res) => {
-  res.send(`Ruta PUT: Actualizar entrenamiento ${req.params.id}`);
-});
+// PUT: Actualización completa
+router.put('/:id', workoutsController.updateWorkout);
 
-// PATCH: Actualización parcial (Placeholder)
-router.patch('/:id', (req, res) => {
-  res.send(`Ruta PATCH: Actualizar parcialmente entrenamiento ${req.params.id}`);
-});
+// PATCH: Actualización parcial
+router.patch('/:id', workoutsController.patchWorkout);
 
 // DELETE: Eliminar entrenamiento (Placeholder)
 router.delete('/:id', (req, res) => {
