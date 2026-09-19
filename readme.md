@@ -25,6 +25,19 @@ API RESTful desarrollada con Node.js y Express para gestionar usuarios, rutinas,
 | **PATCH** | `/api/v1/exercises/:id` | Actualización parcial de un ejercicio | Privada (Admin) / 200 OK o 404 Not Found |
 | **DELETE** | `/api/v1/exercises/:id` | Eliminar un ejercicio del catálogo | Privada (Admin) / 204 No Content o 404 Not Found |
 
+## 📅 Endpoints del Módulo de Entrenamientos (`/api/v1/workouts`)
+
+| Método | Endpoint | Descripción | Restricción / Estado |
+| :--- | :--- | :--- | :--- |
+| **GET** | `/api/v1/workouts` | Listar entrenamientos (Filtros: `?status=`, `?sort=scheduledDate:asc`, `?page=1&limit=10`) | Privada (Propietario) / 200 OK |
+| **GET** | `/api/v1/workouts/:id` | Consultar un entrenamiento con sus ejercicios | Privada (Propietario) / 200 OK o 404 Not Found |
+| **POST** | `/api/v1/workouts` | Crear un plan de entrenamiento con fecha, hora y ejercicios | Privada (Propietario) / 201 Created o 400 Bad Request |
+| **PUT** | `/api/v1/workouts/:id` | Actualizar completamente un plan de entrenamiento | Privada (Propietario) / 200 OK o 404 Not Found |
+| **PATCH** | `/api/v1/workouts/:id` | Actualización parcial (comentarios, estado, horario) | Privada (Propietario) / 200 OK o 404 Not Found |
+| **DELETE** | `/api/v1/workouts/:id` | Eliminar un plan de entrenamiento | Privada (Propietario) / 204 No Content o 404 Not Found |
+| **POST** | `/api/v1/workouts/:id/exercises` | Agregar un ejercicio puntual a un entrenamiento existente | Privada (Propietario) / 201 Created o 404 Not Found |
+| **DELETE** | `/api/v1/workouts/:id/exercises/:exerciseItemId` | Eliminar un ejercicio puntual de la rutina | Privada (Propietario) / 204 No Content o 404 Not Found |
+
 ## 🛠️ Tecnologías Utilizadas
 - **Node.js**
 - **Express 5**
