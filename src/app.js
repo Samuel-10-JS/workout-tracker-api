@@ -2,6 +2,7 @@ const express = require('express');
 const { port } = require('./config/env'); // o './env' según ubicación
 const usersRouter = require('./routes/v1/users.routes');
 const exercisesRouter = require('./routes/v1/exercises.routes');
+const workoutsRouter = require('./routes/v1/workouts.routes');
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.get('/', (req, res) => {
 // Rutas de la API
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/exercises', exercisesRouter);
+app.use('/api/v1/workouts', workoutsRouter);
 
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
