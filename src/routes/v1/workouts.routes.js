@@ -8,10 +8,11 @@ router.get('/', workoutsController.getAllWorkouts);
 // GET: Obtener entrenamiento por ID
 router.get('/:id', workoutsController.getWorkoutById);
 
-// POST: Crear nuevo entrenamiento (Placeholder)
-router.post('/', (req, res) => {
-  res.send('Ruta POST: Crear entrenamiento');
-});
+// POST: Crear nuevo entrenamiento
+router.post('/', workoutsController.createWorkout);
+
+// POST: Agregar un ejercicio a una rutina existente
+router.post('/:id/exercises', workoutsController.addExerciseToWorkout);
 
 // PUT: Actualización completa (Placeholder)
 router.put('/:id', (req, res) => {
