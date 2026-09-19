@@ -2,21 +2,17 @@ const express = require('express');
 const router = express.Router();
 const exercisesController = require('../../controllers/exercises.controller');
 
-// GET: Listar todos los ejercicios (Soporta query string para filtrado)
+// GET: Listar todos los ejercicios
 router.get('/', exercisesController.getAllExercises);
 
 // GET: Obtener ejercicio por ID
 router.get('/:id', exercisesController.getExerciseById);
 
-// POST: Sembrar catálogo (Placeholder)
-router.post('/seed', (req, res) => {
-  res.send('Ruta POST: Sembrar ejercicios');
-});
+// POST: Sembrar catálogo masivo
+router.post('/seed', exercisesController.seedExercises);
 
-// POST: Crear nuevo ejercicio (Placeholder)
-router.post('/', (req, res) => {
-  res.send('Ruta POST: Crear ejercicio');
-});
+// POST: Crear nuevo ejercicio
+router.post('/', exercisesController.createExercise);
 
 // PUT: Actualizar ejercicio (Placeholder)
 router.put('/:id', (req, res) => {
