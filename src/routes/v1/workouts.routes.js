@@ -2,6 +2,10 @@ const express = require('express');
 const router = express.Router();
 const workoutsController = require('../../controllers/workouts.controller');
 
+// ==========================================
+// MÓDULO DE ENTRENAMIENTOS (PLANES DE USUARIO)
+// ==========================================
+
 // GET: Listar todos los entrenamientos
 router.get('/', workoutsController.getAllWorkouts);
 
@@ -20,9 +24,10 @@ router.put('/:id', workoutsController.updateWorkout);
 // PATCH: Actualización parcial
 router.patch('/:id', workoutsController.patchWorkout);
 
-// DELETE: Eliminar entrenamiento (Placeholder)
-router.delete('/:id', (req, res) => {
-  res.send(`Ruta DELETE: Eliminar entrenamiento ${req.params.id}`);
-});
+// DELETE: Eliminar entrenamiento completo
+router.delete('/:id', workoutsController.deleteWorkout);
+
+// DELETE: Eliminar un ítem de ejercicio de una rutina
+router.delete('/:id/exercises/:exerciseItemId', workoutsController.removeExerciseFromWorkout);
 
 module.exports = router;
