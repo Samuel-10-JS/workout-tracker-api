@@ -2,6 +2,10 @@ const express = require('express');
 const router = express.Router();
 const exercisesController = require('../../controllers/exercises.controller');
 
+// ==========================================
+// MÓDULO DE EJERCICIOS (CATÁLOGO MAESTRO)
+// ==========================================
+
 // GET: Listar todos los ejercicios
 router.get('/', exercisesController.getAllExercises);
 
@@ -20,9 +24,7 @@ router.put('/:id', exercisesController.updateExercise);
 // PATCH: Actualización parcial
 router.patch('/:id', exercisesController.patchExercise);
 
-// DELETE: Eliminar ejercicio (Placeholder)
-router.delete('/:id', (req, res) => {
-  res.send(`Ruta DELETE: Eliminar ejercicio ${req.params.id}`);
-});
+// DELETE: Eliminar ejercicio
+router.delete('/:id', exercisesController.deleteExercise);
 
 module.exports = router;
