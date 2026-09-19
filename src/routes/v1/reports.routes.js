@@ -11,10 +11,8 @@ router.get('/', reportsController.getAllReports);
 // GET: Obtener reporte por ID
 router.get('/:id', reportsController.getReportById);
 
-// POST: Crear reporte (Placeholder)
-router.post('/', (req, res) => {
-  res.send('Ruta POST: Crear reporte');
-});
+// POST: Crear reporte
+router.post('/', reportsController.createReport);
 
 // PUT: Actualizar reporte (Placeholder)
 router.put('/:id', (req, res) => {
