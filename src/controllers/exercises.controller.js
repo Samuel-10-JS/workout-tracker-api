@@ -1,7 +1,7 @@
 const { exercises } = require('../config/db.mock');
 const { sendError } = require('../utils/errorResponse');
 
-// Lista inicial para el sembrador (seeder) según la página 9 de la especificación
+// Lista de ejercicios por defecto para el sembrador
 const initialExercises = [
   {
     id: 1,
@@ -33,7 +33,7 @@ const initialExercises = [
   }
 ];
 
-// GET: Listar todos los ejercicios con soporte a filtros
+// Listar todos los ejercicios con soporte a filtros de categoría y grupo muscular
 const getAllExercises = (req, res) => {
   const { category, muscleGroup } = req.query;
   let filtered = [...exercises];
@@ -44,7 +44,7 @@ const getAllExercises = (req, res) => {
   res.status(200).json(filtered);
 };
 
-// GET: Obtener un ejercicio específico por ID
+// Obtener un ejercicio específico por su ID
 const getExerciseById = (req, res) => {
   const id = Number(req.params.id);
   const exercise = exercises.find(e => e.id === id);
@@ -52,7 +52,7 @@ const getExerciseById = (req, res) => {
   res.status(200).json(exercise);
 };
 
-// POST: Poblar masivamente la base de datos (Seeder)
+// Cargar catálogo inicial de ejercicios (Seeder)
 const seedExercises = (req, res) => {
   exercises.length = 0;
   exercises.push(...initialExercises);
@@ -65,7 +65,7 @@ const seedExercises = (req, res) => {
   });
 };
 
-// POST: Crear un nuevo ejercicio manual
+// Crear un nuevo ejercicio de forma manual
 const createExercise = (req, res) => {
   const { name, description, category, muscleGroup } = req.body;
 
@@ -80,7 +80,7 @@ const createExercise = (req, res) => {
   res.status(201).json(newExercise);
 };
 
-// PUT: Actualización completa
+// Actualizar completamente un ejercicio por ID (PUT)
 const updateExercise = (req, res) => {
   const id = Number(req.params.id);
   const { name, description, category, muscleGroup } = req.body;
@@ -96,7 +96,7 @@ const updateExercise = (req, res) => {
   res.status(200).json(exercises[idx]);
 };
 
-// PATCH: Actualización parcial
+// Actualizar parcialmente un ejercicio por ID (PATCH)
 const patchExercise = (req, res) => {
   const id = Number(req.params.id);
   const { name, description, category, muscleGroup } = req.body;
@@ -112,7 +112,7 @@ const patchExercise = (req, res) => {
   res.status(200).json(exercises[idx]);
 };
 
-// DELETE: Eliminar ejercicio
+// Eliminar un ejercicio del catálogo por ID (DELETE)
 const deleteExercise = (req, res) => {
   const id = Number(req.params.id);
   const idx = exercises.findIndex(e => e.id === id);
