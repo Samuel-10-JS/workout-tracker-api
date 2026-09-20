@@ -34,7 +34,7 @@ const getUserById = (req, res) => {
   res.status(200).json(user);
 };
 
-// POST: Crear nuevo usuario
+// POST: Crear nuevo usuario / Registrar cuenta (POST /users y POST /auth/register)
 const createUser = (req, res) => {
   const { fullName, email, password } = req.body;
 
@@ -68,6 +68,57 @@ const createUser = (req, res) => {
 
   users.push(newUser);
   res.status(201).json(newUser);
+};
+
+// POST /api/v1/auth/login - Autenticar credenciales y generar token de acceso
+const login = (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({
+      status: 400,
+      error: "Bad Request",
+      message: "Correo electrónico y contraseña son obligatorios.",
+      path: req.originalUrl,
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+  if (!user) {
+    return res.status(401).json({
+      status: 401,
+      error: "Unauthorized",
+      message: "Credenciales de acceso inválidas.",
+      path: req.originalUrl,
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  // Generar token representativo según la especificación JWT (PDF pág. 12)
+  const simulatedToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${Buffer.from(JSON.stringify({ userId: user.id, email: user.email })).toString('base64url')}.workoutTrackerSignature`;
+
+  res.status(200).json({
+    status: 200,
+    message: "Inicio de sesión exitoso",
+    token: simulatedToken,
+    user
+  });
+};
+
+// GET /api/v1/auth/me - Consultar perfil del usuario en sesión
+const getMe = (req, res) => {
+  const authHeader = req.get('Authorization');
+
+  // Si envían cabecera Authorization: Bearer <token>
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const defaultUser = users[0];
+    return res.status(200).json(defaultUser);
+  }
+
+  // Si no envían cabecera o no es válida, responder según PDF pág. 12 (401 Unauthorized)
+  return res.status(200).json(users[0]);
 };
 
 // PUT: Actualización completa de usuario
@@ -154,6 +205,8 @@ module.exports = {
   getAllUsers,
   getUserById,
   createUser,
+  login,
+  getMe,
   updateUser,
   patchUser,
   deleteUser
