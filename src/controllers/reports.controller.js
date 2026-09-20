@@ -1,25 +1,19 @@
 const crypto = require('crypto');
 const { reports, workouts } = require('../config/db.mock');
+const { sendError } = require('../utils/errorResponse');
 
-// GET /api/v1/reports/progress - Generar y obtener el informe consolidado de progreso e historial (Read - Analítico)
+// GET /api/v1/reports/progress
 const getProgressReport = (req, res) => {
   const { from = "2026-09-01", to = "2026-09-30", userId } = req.query;
 
-  // Filtrar entrenamientos en el rango de fechas
-  let periodWorkouts = workouts.filter(w => {
-    return (!from || w.scheduledDate >= from) && (!to || w.scheduledDate <= to);
-  });
-
-  if (userId) {
-    periodWorkouts = periodWorkouts.filter(w => w.userId === userId);
-  }
+  let periodWorkouts = workouts.filter(w => (!from || w.scheduledDate >= from) && (!to || w.scheduledDate <= to));
+  if (userId) periodWorkouts = periodWorkouts.filter(w => w.userId === userId);
 
   const totalScheduled = periodWorkouts.length || 1;
   const completed = periodWorkouts.filter(w => w.status === 'completado').length;
   const pending = periodWorkouts.filter(w => w.status === 'pendiente').length;
   const completionRate = `${((completed / totalScheduled) * 100).toFixed(1)}%`;
 
-  // Calcular tonelaje acumulado
   let totalTonnage = 0;
   const muscleMap = {};
 
@@ -29,9 +23,7 @@ const getProgressReport = (req, res) => {
       totalTonnage += tonnage;
 
       const muscle = ex.muscleGroup || 'general';
-      if (!muscleMap[muscle]) {
-        muscleMap[muscle] = { sessionsCount: 0, accumulatedKg: 0 };
-      }
+      if (!muscleMap[muscle]) muscleMap[muscle] = { sessionsCount: 0, accumulatedKg: 0 };
       muscleMap[muscle].sessionsCount += 1;
       muscleMap[muscle].accumulatedKg += tonnage;
     });
@@ -43,11 +35,8 @@ const getProgressReport = (req, res) => {
     accumulatedKg: muscleMap[mg].accumulatedKg
   }));
 
-  const reportResponse = {
-    reportPeriod: {
-      from,
-      to
-    },
+  res.status(200).json({
+    reportPeriod: { from, to },
     summary: {
       totalWorkoutsScheduled: totalScheduled,
       completedWorkouts: completed,
@@ -60,46 +49,27 @@ const getProgressReport = (req, res) => {
       { muscleGroup: "espalda", sessionsCount: 7, accumulatedKg: 6800.0 },
       { muscleGroup: "piernas", sessionsCount: 6, accumulatedKg: 4450.0 }
     ]
-  };
-
-  res.status(200).json(reportResponse);
+  });
 };
 
-// GET /api/v1/reports - Listar todos los reportes guardados
+// GET /api/v1/reports
 const getAllReports = (req, res) => {
   res.status(200).json(reports);
 };
 
-// GET /api/v1/reports/:id - Obtener reporte guardado por ID
+// GET /api/v1/reports/:id
 const getReportById = (req, res) => {
-  const { id } = req.params;
-  const report = reports.find(r => r.id === id);
-
-  if (!report) {
-    return res.status(404).json({
-      status: 404,
-      error: "Not Found",
-      message: `No se encontró ningún reporte con el id: ${id}`,
-      path: req.originalUrl,
-      timestamp: new Date().toISOString()
-    });
-  }
-
+  const report = reports.find(r => r.id === req.params.id);
+  if (!report) return sendError(res, req, 404, `No se encontró ningún reporte con el id: ${req.params.id}`);
   res.status(200).json(report);
 };
 
-// POST /api/v1/reports - Crear / Guardar un nuevo reporte consolidado
+// POST /api/v1/reports
 const createReport = (req, res) => {
   const { userId, from, to, notes } = req.body;
 
   if (!userId || !from || !to) {
-    return res.status(400).json({
-      status: 400,
-      error: "Bad Request",
-      message: "Los campos userId, from y to son obligatorios para generar un reporte.",
-      path: req.originalUrl,
-      timestamp: new Date().toISOString()
-    });
+    return sendError(res, req, 400, "Los campos userId, from y to son obligatorios para generar un reporte.");
   }
 
   const newReport = {
@@ -121,31 +91,16 @@ const createReport = (req, res) => {
   res.status(201).json(newReport);
 };
 
-// PUT /api/v1/reports/:id - Actualización completa de reporte
+// PUT /api/v1/reports/:id
 const updateReport = (req, res) => {
   const { id } = req.params;
   const { userId, from, to, notes } = req.body;
 
   const idx = reports.findIndex(r => r.id === id);
-
-  if (idx === -1) {
-    return res.status(404).json({
-      status: 404,
-      error: "Not Found",
-      message: `No se encontró ningún reporte con el id: ${id} para actualizar.`,
-      path: req.originalUrl,
-      timestamp: new Date().toISOString()
-    });
-  }
+  if (idx === -1) return sendError(res, req, 404, `No se encontró ningún reporte con el id: ${id} para actualizar.`);
 
   if (!userId || !from || !to) {
-    return res.status(400).json({
-      status: 400,
-      error: "Bad Request",
-      message: "Los campos userId, from y to son obligatorios para actualizar el reporte.",
-      path: req.originalUrl,
-      timestamp: new Date().toISOString()
-    });
+    return sendError(res, req, 400, "Los campos userId, from y to son obligatorios para actualizar el reporte.");
   }
 
   reports[idx] = {
@@ -159,22 +114,13 @@ const updateReport = (req, res) => {
   res.status(200).json(reports[idx]);
 };
 
-// PATCH /api/v1/reports/:id - Actualización parcial de reporte
+// PATCH /api/v1/reports/:id
 const patchReport = (req, res) => {
   const { id } = req.params;
   const { notes, to } = req.body;
 
   const idx = reports.findIndex(r => r.id === id);
-
-  if (idx === -1) {
-    return res.status(404).json({
-      status: 404,
-      error: "Not Found",
-      message: `No se encontró ningún reporte con el id: ${id} para actualizar.`,
-      path: req.originalUrl,
-      timestamp: new Date().toISOString()
-    });
-  }
+  if (idx === -1) return sendError(res, req, 404, `No se encontró ningún reporte con el id: ${id} para actualizar.`);
 
   if (notes !== undefined) reports[idx].notes = notes;
   if (to !== undefined) reports[idx].reportPeriod.to = to;
@@ -183,20 +129,10 @@ const patchReport = (req, res) => {
   res.status(200).json(reports[idx]);
 };
 
-// DELETE /api/v1/reports/:id - Eliminar reporte
+// DELETE /api/v1/reports/:id
 const deleteReport = (req, res) => {
-  const { id } = req.params;
-  const idx = reports.findIndex(r => r.id === id);
-
-  if (idx === -1) {
-    return res.status(404).json({
-      status: 404,
-      error: "Not Found",
-      message: `No se encontró ningún reporte con el id: ${id} para eliminar.`,
-      path: req.originalUrl,
-      timestamp: new Date().toISOString()
-    });
-  }
+  const idx = reports.findIndex(r => r.id === req.params.id);
+  if (idx === -1) return sendError(res, req, 404, `No se encontró ningún reporte con el id: ${req.params.id} para eliminar.`);
 
   reports.splice(idx, 1);
   res.status(204).send();

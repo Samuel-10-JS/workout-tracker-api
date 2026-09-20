@@ -1,4 +1,5 @@
 const { exercises } = require('../config/db.mock');
+const { sendError } = require('../utils/errorResponse');
 
 // Lista inicial para el sembrador (seeder) según la página 9 de la especificación
 const initialExercises = [
@@ -32,18 +33,13 @@ const initialExercises = [
   }
 ];
 
-// GET: Listar todos los ejercicios con soporte a filtros (category, muscleGroup)
+// GET: Listar todos los ejercicios con soporte a filtros
 const getAllExercises = (req, res) => {
   const { category, muscleGroup } = req.query;
   let filtered = [...exercises];
 
-  if (category) {
-    filtered = filtered.filter(e => e.category.toLowerCase() === category.toLowerCase());
-  }
-
-  if (muscleGroup) {
-    filtered = filtered.filter(e => e.muscleGroup.toLowerCase() === muscleGroup.toLowerCase());
-  }
+  if (category) filtered = filtered.filter(e => e.category.toLowerCase() === category.toLowerCase());
+  if (muscleGroup) filtered = filtered.filter(e => e.muscleGroup.toLowerCase() === muscleGroup.toLowerCase());
 
   res.status(200).json(filtered);
 };
@@ -52,17 +48,7 @@ const getAllExercises = (req, res) => {
 const getExerciseById = (req, res) => {
   const id = Number(req.params.id);
   const exercise = exercises.find(e => e.id === id);
-
-  if (!exercise) {
-    return res.status(404).json({
-      status: 404,
-      error: "Not Found",
-      message: `No se encontró ningún ejercicio con el id: ${id}`,
-      path: req.originalUrl,
-      timestamp: new Date().toISOString()
-    });
-  }
-
+  if (!exercise) return sendError(res, req, 404, `No se encontró ningún ejercicio con el id: ${id}`);
   res.status(200).json(exercise);
 };
 
@@ -84,24 +70,11 @@ const createExercise = (req, res) => {
   const { name, description, category, muscleGroup } = req.body;
 
   if (!name || !description || !category || !muscleGroup) {
-    return res.status(400).json({
-      status: 400,
-      error: "Bad Request",
-      message: "Los campos name, description, category y muscleGroup son obligatorios.",
-      path: req.originalUrl,
-      timestamp: new Date().toISOString()
-    });
+    return sendError(res, req, 400, "Los campos name, description, category y muscleGroup son obligatorios.");
   }
 
   const nextId = exercises.length > 0 ? Math.max(...exercises.map(e => e.id)) + 1 : 1;
-
-  const newExercise = {
-    id: nextId,
-    name,
-    description,
-    category,
-    muscleGroup
-  };
+  const newExercise = { id: nextId, name, description, category, muscleGroup };
 
   exercises.push(newExercise);
   res.status(201).json(newExercise);
@@ -113,25 +86,10 @@ const updateExercise = (req, res) => {
   const { name, description, category, muscleGroup } = req.body;
 
   const idx = exercises.findIndex(e => e.id === id);
-
-  if (idx === -1) {
-    return res.status(404).json({
-      status: 404,
-      error: "Not Found",
-      message: `No se encontró ningún ejercicio con el id: ${id} para actualizar.`,
-      path: req.originalUrl,
-      timestamp: new Date().toISOString()
-    });
-  }
+  if (idx === -1) return sendError(res, req, 404, `No se encontró ningún ejercicio con el id: ${id} para actualizar.`);
 
   if (!name || !description || !category || !muscleGroup) {
-    return res.status(400).json({
-      status: 400,
-      error: "Bad Request",
-      message: "Los campos name, description, category y muscleGroup son obligatorios para PUT.",
-      path: req.originalUrl,
-      timestamp: new Date().toISOString()
-    });
+    return sendError(res, req, 400, "Los campos name, description, category y muscleGroup son obligatorios para PUT.");
   }
 
   exercises[idx] = { id, name, description, category, muscleGroup };
@@ -144,16 +102,7 @@ const patchExercise = (req, res) => {
   const { name, description, category, muscleGroup } = req.body;
 
   const idx = exercises.findIndex(e => e.id === id);
-
-  if (idx === -1) {
-    return res.status(404).json({
-      status: 404,
-      error: "Not Found",
-      message: `No se encontró ningún ejercicio con el id: ${id} para actualizar.`,
-      path: req.originalUrl,
-      timestamp: new Date().toISOString()
-    });
-  }
+  if (idx === -1) return sendError(res, req, 404, `No se encontró ningún ejercicio con el id: ${id} para actualizar.`);
 
   if (name !== undefined) exercises[idx].name = name;
   if (description !== undefined) exercises[idx].description = description;
@@ -167,16 +116,7 @@ const patchExercise = (req, res) => {
 const deleteExercise = (req, res) => {
   const id = Number(req.params.id);
   const idx = exercises.findIndex(e => e.id === id);
-
-  if (idx === -1) {
-    return res.status(404).json({
-      status: 404,
-      error: "Not Found",
-      message: `No se encontró ningún ejercicio con el id: ${id} para eliminar.`,
-      path: req.originalUrl,
-      timestamp: new Date().toISOString()
-    });
-  }
+  if (idx === -1) return sendError(res, req, 404, `No se encontró ningún ejercicio con el id: ${id} para eliminar.`);
 
   exercises.splice(idx, 1);
   res.status(204).send();
