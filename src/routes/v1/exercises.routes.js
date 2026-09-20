@@ -7,16 +7,16 @@ const exercisesController = require('../../controllers/exercises.controller');
 // VALIDACIÓN DE PARÁMETROS, QUERY STRINGS Y ESTADOS HTTP
 // ==========================================
 
+// POST: Sembrar catálogo masivo (Se coloca antes de :id para evitar colisiones de rutas)
+router.post('/seed', exercisesController.seedExercises);
+
 // GET: Listar todos los ejercicios
 router.get('/', exercisesController.getAllExercises);
 
 // GET: Obtener ejercicio por ID
 router.get('/:id', exercisesController.getExerciseById);
 
-// POST: Sembrar catálogo masivo
-router.post('/seed', exercisesController.seedExercises);
-
-// POST: Crear nuevo ejercicio
+// POST: Crear nuevo ejercicio manual
 router.post('/', exercisesController.createExercise);
 
 // PUT: Actualizar ejercicio
