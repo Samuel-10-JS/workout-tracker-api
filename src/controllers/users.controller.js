@@ -24,7 +24,7 @@ const getUserById = (req, res) => {
   res.status(200).json(user);
 };
 
-// POST: Crear nuevo usuario / Registrar cuenta
+// POST: Crear nuevo usuario
 const createUser = (req, res) => {
   const { fullName, email, password } = req.body;
 
@@ -46,36 +46,6 @@ const createUser = (req, res) => {
 
   users.push(newUser);
   res.status(201).json(newUser);
-};
-
-// POST: Autenticar credenciales y generar token de acceso
-const login = (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return sendError(res, req, 400, "Correo electrónico y contraseña son obligatorios.");
-  }
-
-  const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-  if (!user) return sendError(res, req, 401, "Credenciales de acceso inválidas.");
-
-  const simulatedToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${Buffer.from(JSON.stringify({ userId: user.id, email: user.email })).toString('base64url')}.workoutTrackerSignature`;
-
-  res.status(200).json({
-    status: 200,
-    message: "Inicio de sesión exitoso",
-    token: simulatedToken,
-    user
-  });
-};
-
-// GET: Consultar perfil del usuario en sesión
-const getMe = (req, res) => {
-  const authHeader = req.get('Authorization');
-  if (authHeader && authHeader.startsWith('Bearer ')) {
-    return res.status(200).json(users[0]);
-  }
-  return res.status(200).json(users[0]);
 };
 
 // PUT: Actualización completa de usuario
@@ -130,8 +100,6 @@ module.exports = {
   getAllUsers,
   getUserById,
   createUser,
-  login,
-  getMe,
   updateUser,
   patchUser,
   deleteUser
