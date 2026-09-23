@@ -4,13 +4,10 @@ API RESTful desarrollada con Node.js y Express para gestionar usuarios, rutinas,
 
 ---
 
-## 👤 Módulo 1: Usuarios (`/api/v1/users`) y Autenticación (`/api/v1/auth`)
+## 🚀 Endpoints del Módulo de Usuarios (`/api/v1/users`)
 
 | Método | Endpoint | Descripción | Restricción / Estado |
 | :--- | :--- | :--- | :--- |
-| **POST** | `/api/v1/auth/register` | Registrar una nueva cuenta de usuario en el sistema | Pública / 201 Created o 400 Bad Request |
-| **POST** | `/api/v1/auth/login` | Autenticar credenciales y generar token JWT de acceso | Pública / 200 OK o 401 Unauthorized |
-| **GET** | `/api/v1/auth/me` | Consultar los datos de perfil del usuario en sesión | Privada (JWT) / 200 OK |
 | **GET** | `/api/v1/users` | Listar todos los usuarios (Soporta query string `?search=nombre`) | Público / 200 OK |
 | **GET** | `/api/v1/users/:id` | Obtener un usuario específico por su ID | Público / 200 OK o 404 Not Found |
 | **POST** | `/api/v1/users` | Registrar un nuevo usuario en el sistema | Público / 201 Created o 400 Bad Request |
