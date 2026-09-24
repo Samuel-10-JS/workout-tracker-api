@@ -1,7 +1,7 @@
 const { exercises } = require('../config/db.mock');
 const { sendError } = require('../utils/errorResponse');
 
-// Lista inicial para el sembrador (seeder) según la página 9 de la especificación
+// Lista inicial para el sembrador (seeder)
 const initialExercises = [
   {
     id: 1,
